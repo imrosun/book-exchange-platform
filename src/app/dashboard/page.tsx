@@ -12,7 +12,7 @@ const books = [
   { id: 5, title: 'Book 5', cover: '/api/placeholder/200/300' },
 ];
 
-const HomePage: React.FC = () => {
+const Dashboard: React.FC = () => {
   const [focusedBook, setFocusedBook] = useState(2); // Index of the center book
 
   return (
@@ -69,4 +69,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default Dashboard;
