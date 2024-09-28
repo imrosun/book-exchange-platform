@@ -17,8 +17,34 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen z-10 bg-gray-100 dark:bg-gray-900 pt-24">
+      <div className='flex justify-center'>
+        <h3 className='flex justify-center'>My Books</h3>
+        {books.map((book, index) => (
+          <div
+            key={book.id}
+            className={`mt-20 transition-all duration-300 ease-in-out ${
+              index === focusedBook
+                ? 'z-10 scale-125'
+                : index < focusedBook
+                ? '-translate-x-32 -rotate-y-30 scale-75'
+                : 'translate-x-32 rotate-y-30 scale-75'
+            }`}
+            onMouseEnter={() => setFocusedBook(index)}
+          >
+            <img
+              src={book.cover}
+              alt={book.title}
+              className="w-48 h-64 object-cover rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300"
+            />
+          </div>
+        ))}
+        
+      </div>
+
+
+
       {/* 3D Book Display */}
-      <div className=" h-[50vh] flex items-center justify-center perspective-1000">
+      {/* <div className=" h-[50vh] flex items-center justify-center perspective-1000">
         {books.map((book, index) => (
           <div
             key={book.id}
@@ -38,7 +64,7 @@ const Dashboard: React.FC = () => {
             />
           </div>
         ))}
-      </div>
+      </div> */}
 
       {/* Search Section */}
       <div className="max-w-3xl mx-auto mt-16 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
