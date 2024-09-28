@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import AddBook from '@/components/add-book';
+import Modal from '@/components/modal-book';
 
 // Mock data for books
 const books = [
@@ -15,6 +17,11 @@ const books = [
 const Dashboard: React.FC = () => {
   const [focusedBook, setFocusedBook] = useState(2); // Index of the center book
 
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
+
   return (
     <div className="min-h-screen z-10 bg-gray-100 dark:bg-gray-900 pt-24">
       <div className='flex justify-center'>
@@ -22,7 +29,7 @@ const Dashboard: React.FC = () => {
         {books.map((book, index) => (
           <div
             key={book.id}
-            className={`mt-20 transition-all duration-300 ease-in-out ${
+            className={`relative mt-20 transition-all duration-300 ease-in-out ${
               index === focusedBook
                 ? 'z-10 scale-125'
                 : index < focusedBook
@@ -39,6 +46,19 @@ const Dashboard: React.FC = () => {
           </div>
         ))}
         
+      </div>
+
+      <div className='flex justify-center p-6'>
+      <button 
+        onClick={openModal} 
+        className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition">
+          Add Book
+      </button>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <AddBook onClose={closeModal} />
+      </Modal>
+
       </div>
 
 
