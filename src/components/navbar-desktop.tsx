@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { HamburgerMenuIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import Image from "next/image";
-import { useAuth } from "@/app/context/AuthContext"; // Use the correct path to your context
+import { useAuth } from "@/app/context/AuthContext";
 import { toast } from "@/components/hooks/use-toast";
 
 interface NavbarProps {
@@ -17,7 +17,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePath }) => {
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const { theme, setTheme } = useTheme();
-  const { isLoggedIn, logout } = useAuth(); 
+  const { isLoggedIn, logout } = useAuth();
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -48,11 +48,10 @@ const Navbar: React.FC<NavbarProps> = ({ activePath }) => {
     return (
       <Link
         href={href}
-        className={`px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white ${
-          isActive
+        className={`px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white ${isActive
             ? "dark:bg-[#747c75] bg-gradient-to-b from-[#747c75] to-[#4c5e5f] text-white"
             : ""
-        }`}
+          }`}
       >
         {children}
       </Link>
@@ -76,9 +75,9 @@ const Navbar: React.FC<NavbarProps> = ({ activePath }) => {
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="text-2xl font-bold inline-flex">
+            <div className="text-2xl font-bold inline-flex items-center">
               <Image src="/bep_logo.png" alt="logo" width={50} height={50} />
-              <div className="h-auto w-px my-3 ml-2 bg-gray-600"></div>
+              <div className="h-auto w-px my-10 ml-2 bg-gray-600"></div>
               <Link
                 href="https://roshan-sharma-portfolio.vercel.app"
                 target="_blank"
@@ -101,9 +100,10 @@ const Navbar: React.FC<NavbarProps> = ({ activePath }) => {
           <div className="hidden md:block z-20">
             <div className="ml-10 flex items-baseline space-x-4 z-10">
               {/* Change Home to Dashboard if logged in */}
-              <NavLink href={isLoggedIn ? "/dashboard" : "/"}>
+              {/* <NavLink href={isLoggedIn ? "/dashboard" : "/"}>
                 {isLoggedIn ? "Dashboard" : "Home"}
-              </NavLink>
+              </NavLink> */}
+              <NavLink href="/">Home</NavLink>
               <NavLink href="/about">About</NavLink>
               <NavLink href="/services">Services</NavLink>
               <NavLink href="/contact">Contact</NavLink>
@@ -117,32 +117,34 @@ const Navbar: React.FC<NavbarProps> = ({ activePath }) => {
               <>
                 <Link
                   href="/signup"
-                  className="hidden md:inline-block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
+                  className="hidden md:inline-block px-3 py-1 rounded-md text-sm font-medium hover:bg-yellow-700 hover:text-white"
                 >
                   Register
                 </Link>
                 <Link
                   href="/login"
-                  className="hidden md:inline-block px-3 bg-transparent py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
+                  className="hidden md:inline-block px-3 bg-transparent py-1 rounded-md text-sm font-medium hover:bg-green-600 hover:text-white"
                 >
                   Login
                 </Link>
               </>
             ) : (
               <>
+                <NavLink href="/dashboard">Dashboard</NavLink>
+
                 <Link
                   href="/cart"
-                  className="hidden md:inline-block px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
+                  className="hidden md:inline-block px-3 py-1 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
                 >
                   Cart
                 </Link>
-                <Button
+                <Link href=""
                   className="hidden md:inline-block px-3 py-1 rounded-md text-sm font-medium
-                   hover:bg-gray-700 hover:text-white bg-none text-black dark:text-white"
-                  onClick={handleLogout} 
+                   hover:bg-red-600 hover:text-white bg-none text-black dark:text-white"
+                  onClick={handleLogout}
                 >
                   Logout
-                </Button>
+                </Link>
               </>
             )}
 

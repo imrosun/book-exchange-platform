@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AddBook from '@/components/add-book';
@@ -14,30 +14,58 @@ const books = [
   { id: 5, title: 'Book 5', cover: '/api/placeholder/200/300' },
 ];
 
-const Dashboard: React.FC = () => {
-  const [focusedBook, setFocusedBook] = useState(2); // Index of the center book
+interface Book {
+  id?: number;
+  title: string;
+  author?: string; // Optional for mock data
+  category?: string; // Optional for mock data
+  description?: string; // Optional for mock data
+  location?: string; // Optional for mock data
+  cover: string; 
+}
 
+const Dashboard: React.FC = () => {
+  const [focusedBook, setFocusedBook] = useState(2); 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [books, setBooks] = useState<Book[]>([]);
 
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
+  // Fetch books from MongoDB when component mounts
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const response = await fetch('/api/books');
+      const data = await response.json();
+      setBooks(data);
+    };
+    fetchBooks();
+  }, []);
+
+  // Function to add a new book
+  const addBookHandler = async (newBook: Book) => {
+    const response = await fetch('/api/books/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newBook),
+    });
+
+    if (response.ok) {
+      const savedBook = await response.json();
+      setBooks((prevBooks) => [...prevBooks, savedBook]);
+    }
+    
+    closeModal();
+  };
+
   return (
-    <div className="min-h-screen z-10 bg-gray-100 dark:bg-gray-900 pt-24">
-      <div className='flex justify-center'>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24">
+      <div className='flex justify-center relative'>
         <h3 className='flex justify-center'>My Books</h3>
         {books.map((book, index) => (
-          <div
-            key={book.id}
-            className={`relative mt-20 transition-all duration-300 ease-in-out ${
-              index === focusedBook
-                ? 'z-10 scale-125'
-                : index < focusedBook
-                ? '-translate-x-32 -rotate-y-30 scale-75'
-                : 'translate-x-32 rotate-y-30 scale-75'
-            }`}
-            onMouseEnter={() => setFocusedBook(index)}
-          >
+          <div key={book.id} className="relative mt-20">
             <img
               src={book.cover}
               alt={book.title}
@@ -48,43 +76,18 @@ const Dashboard: React.FC = () => {
         
       </div>
 
-      <div className='flex justify-center p-6'>
+      <div className='flex justify-center p-6 '>
       <button 
-        onClick={openModal} 
-        className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition">
+          onClick={openModal} 
+          className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition">
           Add Book
-      </button>
+        </button>
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <AddBook onClose={closeModal} />
-      </Modal>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <AddBook onClose={closeModal} onAddBook={addBookHandler} />
+        </Modal>
 
       </div>
-
-
-
-      {/* 3D Book Display */}
-      {/* <div className=" h-[50vh] flex items-center justify-center perspective-1000">
-        {books.map((book, index) => (
-          <div
-            key={book.id}
-            className={`absolute z-2 transition-all duration-300 ease-in-out ${
-              index === focusedBook
-                ? 'z-10 scale-125'
-                : index < focusedBook
-                ? '-translate-x-32 -rotate-y-30 scale-75'
-                : 'translate-x-32 rotate-y-30 scale-75'
-            }`}
-            onMouseEnter={() => setFocusedBook(index)}
-          >
-            <img
-              src={book.cover}
-              alt={book.title}
-              className="w-48 h-64 object-cover rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300"
-            />
-          </div>
-        ))}
-      </div> */}
 
       {/* Search Section */}
       <div className="max-w-3xl mx-auto mt-16 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">

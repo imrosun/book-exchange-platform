@@ -86,7 +86,7 @@ const Login = () => {
       <div className="flex justify-center">
         <div className="flex flex-col sm:border-[1px] dark:border-[#575e5a] border-[#CECECE] rounded-lg p-10 sm:w-1/2 w-full">
           <form onSubmit={handleLogin}>
-            <h1 className="text-center whitespace-nowrap font-sans font-bold text-3xl sm:px-12 mb-4 text-[#fb820b]">
+            <h1 className="text-center whitespace-nowrap font-sans font-bold text-3xl sm:px-12 mb-4 text-green-600">
               Welcome to <span className="text-[#6d7a73]">BEP!</span>
             </h1>
 
