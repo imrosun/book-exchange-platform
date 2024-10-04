@@ -14,7 +14,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ finishLoading }) => {
     useEffect(() => {
         const timeout = setTimeout(() => setIsMounted(true), 10);
         if (isMounted) {
-            setTimeout(() => finishLoading(), 2000);
+            setTimeout(() => finishLoading(), 1000);
         }
         return () => clearTimeout(timeout);
     }, [isMounted]);

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { toast } from "@/components/hooks/use-toast"; // Import toast from Shadcn UI
 
 interface FormDataType {
   title: string;
@@ -11,10 +12,9 @@ interface FormDataType {
 
 interface AddBookProps {
   onClose: () => void;
-  onAddBook: (newBook: FormDataType) => void; // Accept new book as FormDataType
 }
 
-export default function AddBook({ onClose, onAddBook }: AddBookProps) {
+export default function AddBook({ onClose }: AddBookProps) {
   const [formData, setFormData] = useState<FormDataType>({
     title: '',
     author: '',
@@ -34,7 +34,7 @@ export default function AddBook({ onClose, onAddBook }: AddBookProps) {
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
-    
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -49,21 +49,44 @@ export default function AddBook({ onClose, onAddBook }: AddBookProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Call the onAddBook prop to add the new book
-    onAddBook(formData);
-    
-    // Reset form data after submission if needed
-    setFormData({
-      title: '',
-      author: '',
-      category: '',
-      description: '',
-      location: '',
-      cover: '',
-    });
-    
-    onClose(); // Close the modal after submission
+
+    const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('token='))
+    ?.split('=')[1] || ''; // Use optional chaining and provide a fallback
+
+    try {
+      const response = await fetch('/api/book/createBook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include JWT in headers
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add book');
+      }
+
+      toast({
+        title: "Book added successfully",
+        description: "Welcome back!",
+      }); // Show success message
+      setFormData({
+        title: '',
+        author: '',
+        category: '',
+        description: '',
+        location: '',
+        cover: '',
+      });
+      onClose(); // Close the modal after submission
+
+    } catch (err) {
+      console.error("Error adding book:", err);
+      // setErrorMessage("Failed to add book. Please try again.");
+    }
   };
 
   return (

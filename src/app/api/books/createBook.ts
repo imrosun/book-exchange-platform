@@ -62,55 +62,45 @@
 //   }
 // }
 
+// app/api/book/createBook/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import clientPromise from '@/lib/mongodb';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-
-import { NextApiRequest, NextApiResponse } from 'next';
-import mongoose from 'mongoose';
-
-const MONGODB_URI = process.env.MONGODB_URI; // Your MongoDB connection string
-
-// Define a Book schema
-const bookSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  category: String,
-  description: String,
-  location: String,
-  cover: String,
-});
-
-const Book = mongoose.models.Book || mongoose.model('Book', bookSchema);
-
-async function connectToDatabase() {
-  if (mongoose.connection.readyState === 1) {
-    return;
-  }
-  await mongoose.connect(MONGODB_URI);
+interface DecodedToken extends JwtPayload {
+  email: string; // Define the expected structure of your decoded token
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
-    await connectToDatabase();
+export async function POST(req: NextRequest) {
+  const { title, author, category, description, location, cover } = await req.json();
+  
+  const token = req.headers.get('authorization')?.split(' ')[1];
+  if (!token) {
+    return NextResponse.json({ message: 'Authorization token is required' }, { status: 401 });
+  }
 
-    const { title, author, category, description, location, cover } = req.body;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken; // Cast to DecodedToken
 
-    const newBook = new Book({
+    const client = await clientPromise;
+    const db = client.db('book-exchange');
+
+    const newBook = {
       title,
       author,
       category,
       description,
       location,
       cover,
-    });
+      email: decoded.email, // Now TypeScript knows that email exists
+      createdAt: new Date(),
+    };
 
-    try {
-      await newBook.save();
-      res.status(201).json(newBook);
-    } catch (error) {
-      res.status(500).json({ error: 'Failed to save book' });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    await db.collection('books').insertOne(newBook);
+
+    return NextResponse.json({ message: 'Book added successfully' }, { status: 201 });
+  } catch (error) {
+    console.error('Error adding book:', error);
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
   }
 }

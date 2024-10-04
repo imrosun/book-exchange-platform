@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -12,14 +12,41 @@ const books = [
   { id: 5, title: 'Book 5', cover: '/api/placeholder/200/300' },
 ];
 
+interface Book {
+  _id: string; // Define the expected structure of a book
+  title: string;
+  author: string;
+  category: string;
+  description: string;
+  location: string;
+  cover: string;
+  email: string; // Include any other fields you expect
+}
+
 const HomePage: React.FC = () => {
   const [focusedBook, setFocusedBook] = useState(2); // Index of the center book
+  const [books, setBooks] = useState<Book[]>([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const response = await fetch('/api/book/getBooks');
+      
+      if (response.ok) {
+        const data = await response.json();
+        setBooks(data);
+      } else {
+        console.error("Failed to fetch books");
+      }
+    };
+
+    fetchBooks();
+  }, []);
 
   return (
     <div className="min-h-screen z-10 bg-gray-100 dark:bg-gray-900 pt-24">
       {/* 3D Book Display */}
       <div className=" h-[50vh] flex items-center justify-center perspective-1000">
-        {books.map((book, index) => (
+        {/* {books.map((book, index) => (
           <div
             key={book.id}
             className={`absolute z-2 transition-all duration-300 ease-in-out ${
@@ -37,7 +64,17 @@ const HomePage: React.FC = () => {
               className="w-48 h-64 object-cover rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300"
             />
           </div>
+        ))} */}
+
+<ul>
+        {books.map((book) => (
+          <li key={book._id}>
+            <h3>{book.title}</h3>
+            <p>{book.author}</p>
+            {/* Display other book details */}
+          </li>
         ))}
+      </ul>
       </div>
 
       {/* Search Section */}
@@ -54,7 +91,7 @@ const HomePage: React.FC = () => {
 
       {/* Book List */}
       <div className="max-w-6xl mx-auto mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 p-6">
-        {books.map((book) => (
+        {/* {books.map((book) => (
           <div key={book.id} className="flex flex-col items-center">
             <img
               src={book.cover}
@@ -63,7 +100,7 @@ const HomePage: React.FC = () => {
             />
             <p className="mt-2 text-center font-medium">{book.title}</p>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );

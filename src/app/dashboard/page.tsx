@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
 
   // Function to add a new book
   const addBookHandler = async (newBook: Book) => {
-    const response = await fetch('/api/books/create', {
+    const response = await fetch('/api/books/createBook', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
