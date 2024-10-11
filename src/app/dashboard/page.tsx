@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AddBook from '@/components/add-book';
 import Modal from '@/components/modal-book';
+import BookList from '@/components/book-list';
+import UserBooks from '@/components/user-book-list';
 
 // Mock data for books
 const books = [
@@ -32,38 +34,11 @@ const Dashboard: React.FC = () => {
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
-  // Fetch books from MongoDB when component mounts
-  useEffect(() => {
-    const fetchBooks = async () => {
-      const response = await fetch('/api/books');
-      const data = await response.json();
-      setBooks(data);
-    };
-    fetchBooks();
-  }, []);
-
-  // Function to add a new book
-  const addBookHandler = async (newBook: Book) => {
-    const response = await fetch('/api/books/createBook', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newBook),
-    });
-
-    if (response.ok) {
-      const savedBook = await response.json();
-      setBooks((prevBooks) => [...prevBooks, savedBook]);
-    }
-    
-    closeModal();
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24">
       <div className='flex justify-center relative'>
         <h3 className='flex justify-center'>My Books</h3>
+      
         {books.map((book, index) => (
           <div key={book.id} className="relative mt-20">
             <img
@@ -73,6 +48,9 @@ const Dashboard: React.FC = () => {
             />
           </div>
         ))}
+
+      <UserBooks />
+
         
       </div>
 
@@ -84,7 +62,7 @@ const Dashboard: React.FC = () => {
         </button>
 
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <AddBook onClose={closeModal} onAddBook={addBookHandler} />
+          <AddBook onClose={closeModal} />
         </Modal>
 
       </div>

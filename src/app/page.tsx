@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import BookList from '@/components/book-list';
 
 // Mock data for books
 const books = [
@@ -45,29 +46,13 @@ const HomePage: React.FC = () => {
   return (
     <div className="min-h-screen z-10 bg-gray-100 dark:bg-gray-900 pt-24">
       {/* 3D Book Display */}
-      <div className=" h-[50vh] flex items-center justify-center perspective-1000">
-        {/* {books.map((book, index) => (
-          <div
-            key={book.id}
-            className={`absolute z-2 transition-all duration-300 ease-in-out ${
-              index === focusedBook
-                ? 'z-10 scale-125'
-                : index < focusedBook
-                ? '-translate-x-32 -rotate-y-30 scale-75'
-                : 'translate-x-32 rotate-y-30 scale-75'
-            }`}
-            onMouseEnter={() => setFocusedBook(index)}
-          >
-            <img
-              src={book.cover}
-              alt={book.title}
-              className="w-48 h-64 object-cover rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300"
-            />
-          </div>
-        ))} */}
+      <div className=" h-[50vh] mt-10 flex items-center justify-center perspective-1000">
+        
+      <BookList />
 
-<ul>
+      <ul>
         {books.map((book) => (
+       
           <li key={book._id}>
             <h3>{book.title}</h3>
             <p>{book.author}</p>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { toast } from "@/components/hooks/use-toast"; // Import toast from Shadcn UI
+import { toast } from "@/components/hooks/use-toast"; // Assuming this is your toast component
 
 interface FormDataType {
   title: string;
@@ -7,7 +7,7 @@ interface FormDataType {
   category: string;
   description: string;
   location: string;
-  cover: string; // Change File | null to string
+  cover: string; // base64 encoded string for the image
 }
 
 interface AddBookProps {
@@ -32,7 +32,7 @@ export default function AddBook({ onClose }: AddBookProps) {
     }));
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
 
     if (file) {
@@ -40,7 +40,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       reader.onloadend = () => {
         setFormData((prev) => ({
           ...prev,
-          cover: reader.result as string, // Convert to base64 or URL
+          cover: reader.result as string, // Convert to base64
         }));
       };
       reader.readAsDataURL(file); // Read file as Data URL
@@ -51,41 +51,56 @@ export default function AddBook({ onClose }: AddBookProps) {
     e.preventDefault();
 
     const token = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('token='))
-    ?.split('=')[1] || ''; // Use optional chaining and provide a fallback
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1] || ''; // Fetch token from cookies
+
+    if (!token) {
+      toast({ title: 'Error', description: 'You are not authorized.', 
+        // status: 'error'
+       });
+      return;
+    }
 
     try {
-      const response = await fetch('/api/book/createBook', {
+      const response = await fetch('/api/books/createBook', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include JWT in headers
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to add book');
+      if (response.ok) {
+        toast({
+          title: "Book added successfully",
+          description: "Your book has been added to the collection.",
+        });
+        setFormData({
+          title: '',
+          author: '',
+          category: '',
+          description: '',
+          location: '',
+          cover: '',
+        });
+        onClose(); // Close the modal after success
+      } else {
+        const errorData = await response.json();
+        toast({
+          title: "Error",
+          description: errorData.message || 'Failed to add book',
+          // status: 'error',
+        });
       }
-
-      toast({
-        title: "Book added successfully",
-        description: "Welcome back!",
-      }); // Show success message
-      setFormData({
-        title: '',
-        author: '',
-        category: '',
-        description: '',
-        location: '',
-        cover: '',
-      });
-      onClose(); // Close the modal after submission
-
     } catch (err) {
       console.error("Error adding book:", err);
-      // setErrorMessage("Failed to add book. Please try again.");
+      toast({
+        title: "Error",
+        description: 'Failed to add book. Please try again.',
+        // status: 'error',
+      });
     }
   };
 
@@ -96,6 +111,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       <input
         type="text"
         name="title"
+        value={formData.title}
         placeholder="Book Title"
         onChange={handleChange}
         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"
@@ -104,6 +120,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       <input
         type="text"
         name="author"
+        value={formData.author}
         placeholder="Author"
         onChange={handleChange}
         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"
@@ -112,6 +129,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       <input
         type="text"
         name="category"
+        value={formData.category}
         placeholder="Category"
         onChange={handleChange}
         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"
@@ -119,6 +137,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       />
       <textarea
         name="description"
+        value={formData.description}
         placeholder="Description"
         onChange={handleChange}
         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"
@@ -127,6 +146,7 @@ export default function AddBook({ onClose }: AddBookProps) {
       />
       <textarea
         name="location"
+        value={formData.location}
         placeholder="Location"
         onChange={handleChange}
         className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-500"

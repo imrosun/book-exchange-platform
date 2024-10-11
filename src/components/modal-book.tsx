@@ -9,11 +9,6 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({isOpen, onClose, children}) => {
     const modalRef = useRef<HTMLDivElement>(null);
 
-    // const handleBackdropClick = (e: React.MouseEvent) => {
-    //     if(modalRef.current && !modalRef.current.contains(e.target as Node)) {
-    //         onClose();
-    //     }
-    // };
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
             if(e.key === 'Escape') {
