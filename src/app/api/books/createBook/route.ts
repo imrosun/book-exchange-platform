@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as DecodedToken;
     
     if (!decoded || !decoded.email) {

@@ -25,3 +25,12 @@ export const logout = (): void => {
   document.cookie = "token=; path=/; max-age=0;";
   window.location.href = "/login";
 };
+
+// utils/getCookie.ts
+export function getCookie(name: string) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  return null;
+}
+

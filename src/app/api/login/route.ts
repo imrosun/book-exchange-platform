@@ -1,8 +1,7 @@
-// app/api/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import clientPromise from '@/lib/mongodb';
-import jwt from 'jsonwebtoken';  // Ensure you install this package
+import jwt from 'jsonwebtoken'; 
 
 export async function POST(req: NextRequest) {
   const { email, password } = await req.json();

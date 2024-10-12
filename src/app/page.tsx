@@ -4,24 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import BookList from '@/components/book-list';
 
-// Mock data for books
-const books = [
-  { id: 1, title: 'Book 1', cover: '/api/placeholder/200/300' },
-  { id: 2, title: 'Book 2', cover: '/api/placeholder/200/300' },
-  { id: 3, title: 'Book 3', cover: '/api/placeholder/200/300' },
-  { id: 4, title: 'Book 4', cover: '/api/placeholder/200/300' },
-  { id: 5, title: 'Book 5', cover: '/api/placeholder/200/300' },
-];
-
 interface Book {
-  _id: string; // Define the expected structure of a book
+  _id: string; 
   title: string;
   author: string;
   category: string;
   description: string;
   location: string;
   cover: string;
-  email: string; // Include any other fields you expect
+  email: string; 
 }
 
 const HomePage: React.FC = () => {
@@ -56,7 +47,6 @@ const HomePage: React.FC = () => {
           <li key={book._id}>
             <h3>{book.title}</h3>
             <p>{book.author}</p>
-            {/* Display other book details */}
           </li>
         ))}
       </ul>

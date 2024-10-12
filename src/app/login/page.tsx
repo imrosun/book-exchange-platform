@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -27,18 +26,18 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-
+  
     // Client-side validation
     if (!email || !password) {
       setErrorMessage("Email and password are required.");
       return;
     }
-
+  
     if (password.length < 8) {
       setErrorMessage("Password should be at least 8 characters long.");
       return;
     }
-
+  
     setIsLoading(true);
     try {
       const res = await fetch("/api/login", {
@@ -48,9 +47,9 @@ const Login = () => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await res.json();
-
+  
       if (!res.ok) {
         if (data.message === "User not found") {
           setErrorMessage("User not found. Please register first.");
@@ -60,8 +59,8 @@ const Login = () => {
           setErrorMessage("Something went wrong. Please try again later.");
         }
       } else {
-        // Success
-        document.cookie = `token=${data.token}; path=/`;
+        // Success: Store token in cookie with path set to '/'
+        document.cookie = `token=${data.token}; path=/;`;
         login(); // Trigger context update
         toast({
           title: "Login successful",
@@ -103,7 +102,7 @@ const Login = () => {
               <button type="button" onClick={() => setShowPassword(!showPassword)}
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-700"
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? "👁️" : "🙈"}
               </button>
             </div>
 

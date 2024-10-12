@@ -1,5 +1,6 @@
+"use client"
 import { useState } from 'react';
-import { toast } from "@/components/hooks/use-toast"; // Assuming this is your toast component
+import { toast } from "@/components/hooks/use-toast"; 
 
 interface FormDataType {
   title: string;
@@ -21,7 +22,7 @@ export default function AddBook({ onClose }: AddBookProps) {
     category: '',
     description: '',
     location: '',
-    cover: '', // Initialize as an empty string
+    cover: '', 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -49,7 +50,6 @@ export default function AddBook({ onClose }: AddBookProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const token = document.cookie
       .split('; ')
       .find(row => row.startsWith('token='))
@@ -85,7 +85,7 @@ export default function AddBook({ onClose }: AddBookProps) {
           location: '',
           cover: '',
         });
-        onClose(); // Close the modal after success
+        onClose();
       } else {
         const errorData = await response.json();
         toast({

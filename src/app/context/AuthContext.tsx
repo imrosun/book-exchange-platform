@@ -1,38 +1,42 @@
-// app/context/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getCookie } from '../../lib/utils'; 
+import { useRouter } from 'next/navigation'; 
 
 interface AuthContextType {
   isLoggedIn: boolean;
   login: () => void;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();  
 
   useEffect(() => {
-    // Check if the user is logged in on component mount
-    const token = localStorage.getItem("token");
+    const token = getCookie("token");
     if (token) {
       setIsLoggedIn(true);
     }
+    setLoading(false); 
   }, []);
 
   const login = () => {
-    // Set login state
-    setIsLoggedIn(true); 
+    setIsLoggedIn(true);
   };
 
   const logout = () => {
-    // Remove token and update state
-    localStorage.removeItem("token");
-    setIsLoggedIn(false); 
+    // Clear the token cookie
+    document.cookie = "token=; Max-Age=0; path=/";
+    setIsLoggedIn(false);
+    router.push("/home");
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

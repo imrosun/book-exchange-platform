@@ -4,41 +4,48 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import AddBook from '@/components/add-book';
 import Modal from '@/components/modal-book';
-import BookList from '@/components/book-list';
 import UserBooks from '@/components/user-book-list';
-
-// Mock data for books
-const books = [
-  { id: 1, title: 'Book 1', cover: '/api/placeholder/200/300' },
-  { id: 2, title: 'Book 2', cover: '/api/placeholder/200/300' },
-  { id: 3, title: 'Book 3', cover: '/api/placeholder/200/300' },
-  { id: 4, title: 'Book 4', cover: '/api/placeholder/200/300' },
-  { id: 5, title: 'Book 5', cover: '/api/placeholder/200/300' },
-];
+import { useAuth } from '@/app/context/AuthContext'; 
+import { useRouter } from 'next/navigation';
 
 interface Book {
   id?: number;
   title: string;
-  author?: string; // Optional for mock data
-  category?: string; // Optional for mock data
-  description?: string; // Optional for mock data
-  location?: string; // Optional for mock data
-  cover: string; 
+  author?: string;
+  category?: string;
+  description?: string;
+  location?: string;
+  cover: string;
 }
 
 const Dashboard: React.FC = () => {
-  const [focusedBook, setFocusedBook] = useState(2); 
+  const { isLoggedIn, loading } = useAuth(); 
+  const router = useRouter(); 
   const [isModalOpen, setModalOpen] = useState(false);
   const [books, setBooks] = useState<Book[]>([]);
 
+  useEffect(() => {
+    if (!loading && !isLoggedIn) {
+      router.push('/'); // Redirect to home if the user is not logged in
+    }
+  }, [isLoggedIn, loading, router]);
+
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isLoggedIn) {
+    return null; 
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pt-24">
       <div className='flex justify-center relative'>
         <h3 className='flex justify-center'>My Books</h3>
-      
+
         {books.map((book, index) => (
           <div key={book.id} className="relative mt-20">
             <img
@@ -49,14 +56,13 @@ const Dashboard: React.FC = () => {
           </div>
         ))}
 
-      <UserBooks />
+        <UserBooks />
 
-        
       </div>
 
       <div className='flex justify-center p-6 '>
-      <button 
-          onClick={openModal} 
+        <button
+          onClick={openModal}
           className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition">
           Add Book
         </button>
