@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from 'react';
 
 interface Book {
@@ -10,12 +10,14 @@ interface Book {
   location: string;
   cover: string; // URL or base64 encoded image string
   email: string; // The email of the user who added the book
+  createdAt?: string;
 }
 
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [focusedBook, setFocusedBook] = useState(3);
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -42,25 +44,48 @@ export default function BookList() {
     };
 
     fetchBooks();
-  }, []); // Empty dependency array to run once on component mount
+  }, []);
 
   if (loading) return <p>Loading books...</p>;
   if (error) return <p>{error}</p>;
 
+
+  const recentBooks = books
+    .sort((a, b) => (new Date(b.createdAt || '').getTime() - new Date(a.createdAt || '').getTime()))
+    .slice(0, 5);
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {books.map((book) => (
-        <div key={book._id} className="border rounded-lg p-4 shadow-md">
-          <img
-            src={book.cover}
-            alt={book.title}
-            className="w-full h-64 object-cover mb-4"
-          />
-          <h2 className="text-lg font-semibold">{book.title}</h2>
-          <p className="text-sm text-gray-700">By {book.author}</p>
-          <p className="text-sm text-gray-500">Category: {book.category}</p>
-          <p className="text-sm text-gray-500">Location: {book.location}</p>
-          <p className="mt-2 text-gray-800">{book.description}</p>
+    <div className="h-[50vh] flex items-center justify-center perspective-1000">
+      {recentBooks.map((book, index) => (
+        <div
+          key={book._id}
+        // className="relative group perspective-3d"
+        >
+          <div className="text-center h-[50vh] flex items-center justify-center perspective-1000">
+            {/* {books.map((book, index) => ( */}
+            <div
+              key={book._id}
+              className={`absolute z-2 transition-all duration-300 ease-in-out ${index === focusedBook
+                  ? 'z-10 scale-125'
+                  : index < focusedBook
+                    ? '-translate-x-32 -rotate-y-30 scale-75'
+                    : 'translate-x-32 rotate-y-30 scale-75'
+                }`}
+              onMouseEnter={() => setFocusedBook(index)}
+            >
+              <img
+                src={book.cover}
+                alt={book.title}
+                className="w-48 h-64 object-cover rounded-lg shadow-xl hover:shadow-2xl transition-shadow duration-300"
+              />
+              {index === focusedBook && (
+                <h2 className="text-sm font-bold mt-4 text-center">{book.title}</h2>
+              )}
+
+            </div>
+            {/* ))} */}
+          </div>
+
         </div>
       ))}
     </div>

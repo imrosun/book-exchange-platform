@@ -16,7 +16,7 @@ interface Book {
 }
 
 const HomePage: React.FC = () => {
-  const [focusedBook, setFocusedBook] = useState(2); // Index of the center book
+  const [focusedBook, setFocusedBook] = useState(2); 
   const [books, setBooks] = useState<Book[]>([]);
 
   useEffect(() => {
@@ -64,19 +64,7 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Book List */}
-      <div className="max-w-6xl mx-auto mt-16 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 p-6">
-        {/* {books.map((book) => (
-          <div key={book.id} className="flex flex-col items-center">
-            <img
-              src={book.cover}
-              alt={book.title}
-              className="w-32 h-48 object-cover rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
-            />
-            <p className="mt-2 text-center font-medium">{book.title}</p>
-          </div>
-        ))} */}
-      </div>
+     
     </div>
   );
 };
