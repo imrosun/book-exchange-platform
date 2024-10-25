@@ -6,10 +6,7 @@ export async function GET() {
     const client = await clientPromise;
     const db = client.db('book-exchange');
 
-    // Fetch all books from the books collection
     const books = await db.collection('books').find({}).toArray();
-
-    // Respond with the list of books
     return NextResponse.json(books, { status: 200 });
   } catch (error) {
     console.error('Error fetching books:', error);

@@ -26,7 +26,6 @@ export const logout = (): void => {
   window.location.href = "/login";
 };
 
-// utils/getCookie.ts
 export function getCookie(name: string) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);

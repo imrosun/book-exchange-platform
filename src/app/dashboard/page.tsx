@@ -26,7 +26,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (!loading && !isLoggedIn) {
-      router.push('/'); // Redirect to home if the user is not logged in
+      router.push('/'); 
     }
   }, [isLoggedIn, loading, router]);
 

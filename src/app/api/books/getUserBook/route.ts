@@ -23,7 +23,6 @@ export async function GET(req: NextRequest) {
     const client = await clientPromise;
     const db = client.db('book-exchange');
 
-    // Fetch books where the email matches the user's email
     const userBooks = await db.collection('books').find({ email: decoded.email }).toArray();
 
     return NextResponse.json(userBooks, { status: 200 });

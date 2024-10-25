@@ -17,7 +17,6 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // If already logged in, redirect to dashboard
     if (isLoggedIn) {
       router.push("/dashboard");
     }
@@ -61,7 +60,7 @@ const Login = () => {
       } else {
         // Success: Store token in cookie with path set to '/'
         document.cookie = `token=${data.token}; path=/;`;
-        login(); // Trigger context update
+        login(); 
         toast({
           title: "Login successful",
           description: "Welcome back!",
@@ -77,7 +76,7 @@ const Login = () => {
   };
 
   if (isLoggedIn) {
-    return null; // Avoid rendering login form if already logged in
+    return null; 
   }
 
   return (
